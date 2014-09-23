@@ -1,2 +1,2 @@
-examples
-========
+golang examples
+===
