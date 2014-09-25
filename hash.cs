@@ -1,3 +1,7 @@
+// csc hash.cs
+// origin: http://bbs.csdn.net/topics/310249367
+// 2014-9-23
+
 using System;
 using System.Collections.Generic;
 namespace tree
@@ -39,21 +43,14 @@ namespace tree
                 string sKey = new string(charArr);
                 if (!Dict.ContainsKey(sKey))
                 {
-                    continue;
-                }
-                else
-                {
                     Dict.Add(sKey, true);
                 }
             }
 
             long end = System.DateTime.Now.Ticks;
 
-            Console.WriteLine("共" + Dict.Count + "条不重复数据");
-            Console.WriteLine("共计" + totalStr/10000 + "万条数据，数据总长度" + totalLength + "，完成过滤共耗时" + System.TimeSpan.FromTicks(end - begin).Milliseconds + "毫秒");
+            Console.WriteLine("共计" + totalStr/10000 + "万条数据，数据总长度" + totalLength + "，其中" + Dict.Count + "条不重复数据");
+            Console.WriteLine("完成过滤共耗时" + System.TimeSpan.FromTicks(end - begin).Milliseconds + "ms");
         }
-
-
     }
-
 }

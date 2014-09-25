@@ -1,3 +1,7 @@
+// go run hash.go
+// Author: liudng@gmail.com
+// 2014-9-23
+
 package main
 
 import (
@@ -14,6 +18,7 @@ func main() {
 	totalLength := 0
 	input := strings.Split("白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人", "")
 
+	//生成随机字符串, 长度为3~16
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < totalStr; i++ {
 		tempStr := ""
@@ -41,7 +46,7 @@ func main() {
 
 	end := time.Now()
 
-	fmt.Printf("共%v条数据, 其中%v条不重复数据\n", totalStr, len(Dict))
+	fmt.Printf("共计%v万条数据，数据总长度%v, 其中%v条不重复数据\n", totalStr/10000, totalLength, len(Dict))
 	fmt.Printf("%v\n%v\n", begin, end)
-	fmt.Printf("共计%v万条数据，数据总长度%v，完成过滤共耗时%v\n", totalStr/10000, totalLength, end.Sub(begin))
+	fmt.Printf("完成过滤共耗时%v\n", end.Sub(begin))
 }
