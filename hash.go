@@ -47,6 +47,6 @@ func main() {
 	end := time.Now()
 
 	fmt.Printf("共计%v万条数据，数据总长度%v, 其中%v条不重复数据\n", totalStr/10000, totalLength, len(Dict))
-	fmt.Printf("%v\n%v\n", begin, end)
+	//fmt.Printf("%v\n%v\n", begin, end)
 	fmt.Printf("完成过滤共耗时%v\n", end.Sub(begin))
 }

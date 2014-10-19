@@ -34,7 +34,7 @@ namespace tree
 
             //测试开始
             long begin = System.DateTime.Now.Ticks;
-            Dictionary<string, bool> Dict = new Dictionary<string, bool>();
+            Dictionary<string, string> Dict = new Dictionary<string, string>();
 
             for (int i = 0; i < myArr.Count;i++ )
             {
@@ -43,14 +43,14 @@ namespace tree
                 string sKey = new string(charArr);
                 if (!Dict.ContainsKey(sKey))
                 {
-                    Dict.Add(sKey, true);
+                    Dict.Add(sKey, myArr[i]);
                 }
             }
 
             long end = System.DateTime.Now.Ticks;
 
             Console.WriteLine("共计" + totalStr/10000 + "万条数据，数据总长度" + totalLength + "，其中" + Dict.Count + "条不重复数据");
-            Console.WriteLine("完成过滤共耗时" + System.TimeSpan.FromTicks(end - begin).Milliseconds + "ms");
+            Console.WriteLine("完成过滤共耗时" + System.TimeSpan.FromTicks(end - begin).Milliseconds /1000.000 + "s");
         }
     }
 }

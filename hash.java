@@ -28,7 +28,7 @@ public class hash {
 
         //测试开始
         long begin = java.util.Calendar.getInstance().getTimeInMillis();
-        Dictionary<String, Boolean> Dict = new Hashtable<String, Boolean>();
+        Dictionary<String, String> Dict = new Hashtable<String, String>();
 
         for (int i = 0; i < myArr.size();i++ )
         {
@@ -37,13 +37,13 @@ public class hash {
             String sKey = new String(charArr);
             if (Dict.get(sKey) == null)
             {
-                Dict.put(sKey, true);
+                Dict.put(sKey, myArr.get(i));
             }
         }
 
         long end = java.util.Calendar.getInstance().getTimeInMillis();
 
         System.out.println("共计" + totalStr / 10000 + "万条数据，数据总长度" + totalLength + "，其中" + Dict.size() + "条不重复数据");
-        System.out.println("完成过滤共耗时" + (end - begin) + "ms");
+        System.out.println("完成过滤共耗时" + (end - begin) /1000.000 + "s");
     }
 }

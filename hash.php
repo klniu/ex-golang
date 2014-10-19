@@ -18,7 +18,7 @@ for($i = 0; $i < $totalStr; $i++) {
 }
 
 //测试开始
-$begin = microtime();
+$begin = microtime(true);
 $Dict = array();
 foreach($myArr as $v) {
 	$keyArr = str_split($v);
@@ -29,8 +29,7 @@ foreach($myArr as $v) {
     }
 }
 
-$end = microtime();
+$end = microtime(true);
 
-printf("共%d条数据, 其中%d条不重复数据\n", $totalStr, count($Dict));
-printf("%s\n%s\n", $begin, $end);
-printf("共计%s万条数据，数据总长度%s，完成过滤共耗时%s秒\n", $totalStr/10000, $totalLength, ($end-$begin)/1000);
+printf("共计%s万条数据, 数据总长度%s，其中%d条不重复数据\n", $totalStr/10000, $totalLength, count($Dict));
+printf("完成过滤共耗时%s秒\n", $end - $begin);
