@@ -1,0 +1,16 @@
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var a string
+	var b []byte
+
+	a = "ab程序"
+	b = []byte{0xe7, 0x61, 0xa8, 0x61, 0x8b, 0x61, 0xe5, 0x61, 0xba, 0x61, 0x8f, 0x10}
+
+	fmt.Printf("%#v\n", []byte(a))
+	fmt.Printf("%#v\n", string(b))
+}

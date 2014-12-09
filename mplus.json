@@ -1,0 +1,83 @@
+{
+    "mplus_data": "E:/home/LD",
+    "programs": {
+        "idea": {"type": 1, "path": "D:/Program Files (x86)/IntelliJ IDEA 14.0.1/bin/idea.exe", "args": []},
+        "ideac": {"type": 1, "path": "D:/Program Files (x86)/IntelliJ IDEA Community Edition 14.0.1/bin/idea.exe", "args": []},
+        "phpstorm": {"type": 1, "path": "D:/Program Files (x86)/PhpStorm 8.0.1/bin/PhpStorm.exe", "args": []},
+        "cb":   {"type": 1, "path": "D:/Program Files (x86)/codeblocks/codeblocks.exe", "args": []},
+        "liteide": {"type": 1, "path": "D:/Program Files (x86)/liteide/bin/liteide.exe", "args": []},
+        "eclipse": {"type": 1, "path": "D:/Program Files (x86)/adt-bundle-windows-x86-20140321/eclipse/eclipse.exe", "args": []},
+        "android_sdk": {"type": 1, "path": "D:/Program Files (x86)/adt-bundle-windows-x86-20140321/SDK Manager.exe", "args": []},
+        "pwd":  {"type": 2, "path": "bash.exe", "args": ["pwd"]},
+        "vi":   {"type": 2, "path": "bash.exe", "args": ["vim"]},
+        "vim":  {"type": 2, "path": "bash.exe", "args": ["vim"]},
+        "ll":   {"type": 2, "path": "ls.exe", "args": ["-l"]}
+    },
+    "chdir": {
+        "public": "{mplusData}/public",
+        "client": "{mplusData}/data/mon/trunk/client",
+        "examples": "{mplusData}/data/mon/trunk/server/src/github.com/liudng/examples",
+        "fav": "{mplusData}/data/mon/trunk/server/src/github.com/favframework/fav",
+        "gopress": "{mplusData}/data/mon/trunk/server/src/github.com/liudng/gopress",
+        "webook": "{mplusData}/data/mon/trunk/server/src/github.com/liudng/webook",
+        "monle": "{mplusData}/data/mon/trunk/server/src/monle",
+        "tagbar": "{mplusData}/data/mon/trunk/server/src/tagbar"
+    },
+    "env": {
+        "TEMP": "{basePath}/temp",
+        "TMP":  "{basePath}/temp",
+        "PHP_FCGI_MAX_REQUESTS": "2000",
+        "ANT_HOME": "{basePath}/ant_x86",
+        "JAVA_HOME": "{basePath}/jdk_x86",
+        "C_INCLUDEDE_PATH": "{basePath}/mingw_x86/include",
+        "CPLUS_INCLUDE_PATH": "{basePath}/mingw_x86/include",
+        "ERLANG_HOME": "D:/Program Files (x86)/erl6.1",
+        "ANDROID_SDK_HOME": "e:/home/LD",
+        "GOPATH": "{mplusData}/data/mon/trunk/server",
+        "GOROOT": "{basePath}/go_x86",
+        "GOTOOLDIR": "{basePath}/go_x86/pkg/tool/windows_386"
+    },
+    "path": [
+        "{SystemRoot}",
+        "{SystemRoot}/system32",
+        "{UserProfile}/AppData/Roaming/npm",
+        "{basePath}/ant_x86/bin",
+        "{basePath}/git_x86/bin",
+        "{basePath}/go_x86/bin",
+        "{basePath}/go_x86/pkg/tool/windows_386",
+        "{basePath}/imagemagick_x86",
+        "{basePath}/jdk_x86/bin",
+        "{basePath}/lua_x86",
+        "{basePath}/memcached_x86",
+        "{basePath}/mercurial_x86",
+        "{basePath}/mingw_x86/bin",
+        "{basePath}/mingw_x86/msys/1.0/bin",
+        "{basePath}/mysql_x86/bin",
+        "{basePath}/mysql-proxy/bin",
+        "{basePath}/nginx_x86",
+        "{basePath}/nodejs_x86",
+        "{basePath}/php_x86",
+        "{basePath}/redis_amd64",
+        "{basePath}/subversion_x86/bin",
+        "{basePath}/sysinternals_x86",
+        "{mplusData}/data/mon/trunk/server/bin",
+        "{mplusData}/data/mon/trunk/server/src/monle/bin",
+        "C:/Windows/Microsoft.NET/Framework/v2.0.50727",
+        "D:/Program Files (x86)/adt-bundle-windows-x86-20140321/sdk/platform-tools",
+        "D:/Program Files (x86)/adt-bundle-windows-x86-20140321/sdk/tools"
+    ],
+    "auto_runs": {
+        "git-global-email":    {"cmd": "git", "args": ["config", "--global user.email \"liudng@gmail.com\""]},
+        "git-global-name":     {"cmd": "git", "args": ["config", "--global user.name \"liudng\""]}
+    },
+    "services": {
+        "php-cgi-0":    {"cmd": "php-cgi.exe", "args": ["-b", "127.0.0.1:9000", "-c", "{basePath}/php_x86/php.ini"]},
+        "php-cgi-1":    {"cmd": "php-cgi.exe", "args": ["-b", "127.0.0.1:9001", "-c", "{basePath}/php_x86/php.ini"]},
+        "php-cgi-2":    {"cmd": "php-cgi.exe", "args": ["-b", "127.0.0.1:9002", "-c", "{basePath}/php_x86/php.ini"]},
+        "php-cgi-3":    {"cmd": "php-cgi.exe", "args": ["-b", "127.0.0.1:9003", "-c", "{basePath}/php_x86/php.ini"]},
+        "php-cgi-4":    {"cmd": "php-cgi.exe", "args": ["-b", "127.0.0.1:9004", "-c", "{basePath}/php_x86/php.ini"]},
+        "nginx":        {"cmd": "nginx.exe", "args": []},
+        "mysqld":       {"cmd": "mysqld.exe", "args": ["--defaults-extra-file=e:/home/mysql/node-00/my.ini", "--datadir=e:/home/mysql/node-00", "--port=3306"]},
+        "godoc":        {"cmd": "godoc.exe", "args": ["-http=:6060"]}
+    }
+}
