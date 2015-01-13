@@ -7,13 +7,13 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"time"
 	"sort"
 	"strings"
+	"time"
 )
 
 func main() {
-	totalStr := 200*10000
+	totalStr := 200 * 10000
 	myArr := make([]string, totalStr)
 	totalLength := 0
 	input := strings.Split("白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人", "")
@@ -37,9 +37,7 @@ func main() {
 		keySli := strings.Split(v, "")
 		sort.Strings(keySli)
 		key := strings.Join(keySli, "")
-
-		_, s := Dict[key]
-		if s == false {
+		if _, s := Dict[key]; s == false {
 			Dict[key] = v
 		}
 	}

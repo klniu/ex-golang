@@ -1,13 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"fmt"
 )
 
-//Process实践代码
 func main() {
 	//fileInput, err := os.Open("input.txt")
 	//if err != nil {

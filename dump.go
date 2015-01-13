@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/favframework/debug"
+	"github.com/liudng/godump"
 )
 
 func main() {
@@ -10,5 +10,5 @@ func main() {
 	a["A"] = 1
 	a["B"] = 2
 
-	debug.Dump(a)
+	godump.Dump(a)
 }
