@@ -1,19 +1,19 @@
-// Copyright 2014 The fav Authors. All rights reserved.
+// Copyright 2014 The zhgo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 package main
 
 import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"fmt"
-	"io/ioutil"
-	"strings"
-	"encoding/json"
-	"bufio"
 	"regexp"
+	"strings"
 )
 
 //output to file
@@ -21,24 +21,24 @@ import (
 //var fileOutputErr error
 
 //config stract
-type Config struct{
-	MplusData string `json:"mplus_data"`
-	Programs map[string]confProgram `json:"programs"`
-	Chdir map[string]string `json:"chdir"`
-	Env map[string]string `json:"env"`
-	Path []string `json:"path"`
-	AutoRuns map[string]confService `json:"auto_runs"`
-	Services map[string]confService `json:"services"`
+type Config struct {
+	MplusData string                 `json:"mplus_data"`
+	Programs  map[string]confProgram `json:"programs"`
+	Chdir     map[string]string      `json:"chdir"`
+	Env       map[string]string      `json:"env"`
+	Path      []string               `json:"path"`
+	AutoRuns  map[string]confService `json:"auto_runs"`
+	Services  map[string]confService `json:"services"`
 }
 
 type confProgram struct {
-	Typ int8 `json:"type"`
-	Path string `json:"path"`
+	Typ  int8          `json:"type"`
+	Path string        `json:"path"`
 	Args []interface{} `json:"args"`
 }
 
 type confService struct {
-	Cmd string `json:"cmd"`
+	Cmd  string   `json:"cmd"`
 	Args []string `json:"args"`
 }
 
@@ -148,7 +148,7 @@ func repx(str string) string {
 	return str
 }
 
-func console(){
+func console() {
 ConsoleLoop:
 	for {
 		path, errPath := os.Getwd()
@@ -156,7 +156,7 @@ ConsoleLoop:
 			fmt.Printf("%s\n", errPath)
 		}
 
-		fmt.Print("["+path+"] ")
+		fmt.Print("[" + path + "] ")
 
 		reader := bufio.NewReader(os.Stdin)
 		strBytes, _, errReadLine := reader.ReadLine()
@@ -231,7 +231,7 @@ func exe(typ int8, name string, args ...string) *exec.Cmd {
 	cmd := exec.Command(name, args...)
 
 	switch typ {
-	case 1://service mode
+	case 1: //service mode
 		fmt.Printf("[%s]", name)
 		fmt.Println(args)
 
@@ -243,7 +243,7 @@ func exe(typ int8, name string, args ...string) *exec.Cmd {
 		fmt.Println(cmd.Process.Pid)
 
 		//runtime.SetFinalizer(cmd, cmd.Process.Kill())
-	case 2://application mode, input or output to standard window
+	case 2: //application mode, input or output to standard window
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -256,14 +256,14 @@ func exe(typ int8, name string, args ...string) *exec.Cmd {
 	return cmd
 }
 
-func setenv(key, value string){
+func setenv(key, value string) {
 	err := os.Setenv(key, value)
-	if(err != nil){
+	if err != nil {
 		fmt.Printf("%s\n", err)
 	}
 }
 
-func chdir(path string){
+func chdir(path string) {
 	err := os.Chdir(path)
 	if err != nil {
 		fmt.Printf("%s\n", err)
@@ -296,7 +296,7 @@ func serviceStart(name string) {
 	if service.Cmd == "nginx.exe" {
 		//delete error log
 		os.Remove(fmt.Sprintf("%s/nginx_x86/logs/error.log", basePath))
-		chdir(basePath+"/nginx_x86")
+		chdir(basePath + "/nginx_x86")
 	}
 
 	exe(1, service.Cmd, service.Args...)
@@ -306,7 +306,7 @@ func serviceStart(name string) {
 	}
 }
 
-func serviceStop(name string){
+func serviceStop(name string) {
 	if name == "all" {
 		for k, _ := range config.Services {
 			serviceStop(k)
