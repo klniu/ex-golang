@@ -4,24 +4,37 @@ import (
 	"fmt"
 )
 
-type a struct {
-
+type A struct {
+	ID int64
 }
 
-type b struct {
-	a
+type B struct {
+	A
+	ID int64
+	Name string
 }
 
-func (c *a)Say() {
-	fmt.Println("a.Say")
+func (a *A)Init() {
+	a.ID = 128
 }
 
-func (d *b)Say() {
-	fmt.Println("b.Say")
+func (b *B)Init() {
+	b.A.Init()
+	b.ID = 256
+}
+
+func (a *A)Say() {
+	fmt.Println("A.Say: ", a.ID)
+}
+
+func (b *B)Say() {
+	b.A.Say()
+	fmt.Println("B.Say: ", b.ID, b.A.ID)
 }
 
 func main() {
-	e := b{}
-	e.Say()
-	e.a.Say()
+	b := B{}
+	b.Init()
+	b.Say()
+	//b.A.Say()
 }
