@@ -1,0 +1,7 @@
+.idea
+*.iml
+*.exe
+*.out
+bin
+examples
+obj
