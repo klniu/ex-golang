@@ -9,25 +9,25 @@ type A struct {
 }
 
 type B struct {
-	A
-	ID int64
+	A    // Import A
+	ID   int64
 	Name string
 }
 
-func (a *A)Init() {
+func (a *A) Init() {
 	a.ID = 128
 }
 
-func (b *B)Init() {
+func (b *B) Init() {
 	b.A.Init()
 	b.ID = 256
 }
 
-func (a *A)Say() {
+func (a *A) Say() {
 	fmt.Println("A.Say: ", a.ID)
 }
 
-func (b *B)Say() {
+func (b *B) Say() {
 	b.A.Say()
 	fmt.Println("B.Say: ", b.ID, b.A.ID)
 }
