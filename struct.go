@@ -34,8 +34,8 @@ func main() {
 	}
 
 	//方法二
-	bType := reflect.ValueOf(b).Elem().Type()
-	bNumField := bType.NumField() //注意区别
+	bType = reflect.ValueOf(b).Elem().Type()
+	bNumField = bType.NumField() //注意区别
 	for i := 0; i < bNumField; i++ {
 		bField := bType.Field(i) //注意区别
 		if !bField.Anonymous && bField.Tag.Get("field") != "" {
