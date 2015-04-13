@@ -7,19 +7,15 @@ import java.util.*;
 
 public class hash {
     public static void main(String[] args) {
-
         int totalStr = 200*10000;
         List<String> myArr = new ArrayList<String>();
         int totalLength = 0;
         char[] input = "白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人".toCharArray();
         Random rand = new Random();
-        for (int i = 0; i < totalStr; i++)//一千个数据
-        {
+        for (int i = 0; i < totalStr; i++){//一千个数据
             String tempStr = "";
             int tempLength = rand.nextInt(13) + 3;
-
-            for (int j = 0; j < tempLength; j++)
-            {
+            for (int j = 0; j < tempLength; j++) {
                 tempStr += input[rand.nextInt(input.length)];//用a-z英文测试
             }
             totalLength += tempLength;
@@ -30,13 +26,11 @@ public class hash {
         long begin = java.util.Calendar.getInstance().getTimeInMillis();
         Dictionary<String, String> Dict = new Hashtable<String, String>();
 
-        for (int i = 0; i < myArr.size();i++ )
-        {
+        for (int i = 0; i < myArr.size();i++ ) {
             char[] charArr = myArr.get(i).toCharArray();
             Arrays.sort(charArr);
             String sKey = new String(charArr);
-            if (Dict.get(sKey) == null)
-            {
+            if (Dict.get(sKey) == null) {
                 Dict.put(sKey, myArr.get(i));
             }
         }

@@ -19,13 +19,10 @@ namespace tree
             int totalLength = 0;
             char[] input = "白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人".ToCharArray();
             Random rand = new Random();
-            for (int i = 0; i < totalStr; i++)//一千个数据
-            {
+            for (int i = 0; i < totalStr; i++) {//一千个数据
                 string tempStr = "";
                 int tempLength = rand.Next(3, 16);
-
-                for (int j = 0; j < tempLength; j++)
-                {
+                for (int j = 0; j < tempLength; j++) {
                     tempStr += input[rand.Next(0, input.Length)];//用a-z英文测试
                 }
                 totalLength += tempLength;
@@ -36,13 +33,11 @@ namespace tree
             long begin = System.DateTime.Now.Ticks;
             Dictionary<string, string> Dict = new Dictionary<string, string>();
 
-            for (int i = 0; i < myArr.Count;i++ )
-            {
+            for (int i = 0; i < myArr.Count;i++ ) {
                 char[] charArr = myArr[i].ToCharArray();
                 Array.Sort(charArr);
                 string sKey = new string(charArr);
-                if (!Dict.ContainsKey(sKey))
-                {
+                if (!Dict.ContainsKey(sKey)) {
                     Dict.Add(sKey, myArr[i]);
                 }
             }

@@ -10,7 +10,7 @@ func main() {
 	sem := make(chan int, 10)
 
 	for i := 0; i < 10; i++ {
-		go goFunc(i, sem)
+		go goFunc1(i, sem)
 	}
 
 	for i := 0; i < 10; i++ {
@@ -18,7 +18,7 @@ func main() {
 	}
 }
 
-func goFunc(s int, sem chan int) {
+func goFunc1(s int, sem chan int) {
 	for i := 0; i < 10; i++ {
 		fmt.Printf("goFunc: %d %d\n", s, i)
 	}
