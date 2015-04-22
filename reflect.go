@@ -6,7 +6,7 @@ import (
     "time"
 )
 
-const times int64  = 100000
+const times int64  = 10000000
 
 type A struct {
     F int64
