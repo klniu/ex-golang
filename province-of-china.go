@@ -19,7 +19,7 @@ CREATE TABLE `region` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 func main() {
-	fr, err := os.Open("area-of-china.txt")
+	fr, err := os.Open("regions-of-china.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,21 +62,29 @@ func main() {
 			}
 
 			// Save Province
-			provinceName = nodes[1]
+			provinceName = GetProvinceName(nodes[1])
 			str = fmt.Sprintf(queryTpl, "NULL", provinceName, "20", "%s")
 			province = str
 		case 3: // City
 			if nodes[2] == "市辖区" || nodes[2] == "县" {
 				cities += " "+provinceName
 			} else {
-				cities += " "+nodes[2]
+				cities += " "+GetCityName(nodes[2])
 			}
 			
 		case 4: // District
 		default: // Err
-			fmt.Printf("$s\n", t)
+			fmt.Printf("%s\n", t)
 		}
 	}
+
+	// Save Province
+	if province != "" {
+		province = fmt.Sprintf(province, cities)
+		fmt.Fprintln(writer, province)
+		cities = ""
+	}
+
 
 	writer.Flush()
 }
