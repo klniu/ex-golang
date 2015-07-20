@@ -67,8 +67,7 @@ func (z *Zdic) Get(u string) string {
 
 	req.Header.Set("Referer", "http://www.zdic.net/z/pyjs/")
 
-	client := new(http.Client)
-	resp, err := client.Do(req)
+	resp, err := new(http.Client).Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
