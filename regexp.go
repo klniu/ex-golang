@@ -16,14 +16,22 @@ func main1() {
 }
 
 func main2() {
-    re := regexp.MustCompile("a.")
-    fmt.Println(re.FindAllString("paranormal", -1))
-    fmt.Println(re.FindAllString("paranormal", 2))
-    fmt.Println(re.FindAllString("graal", -1))
+    re := regexp.MustCompile("(a.)b")
+    fmt.Println(re.FindAllString("parbanormalb", -1))
+    fmt.Println(re.FindAllString("paranbormal", 2))
+    fmt.Println(re.FindAllString("graalb", -1))
     fmt.Println(re.FindAllString("none", -1))
 }
 
-func main3() {
+func main() {
+    re := regexp.MustCompile("(a.)b")
+    fmt.Println(re.FindAllStringSubmatch("parbanormalb", -1))
+    fmt.Println(re.FindAllStringSubmatch("paranbormal", 2))
+    fmt.Println(re.FindAllStringSubmatch("graalb", -1))
+    fmt.Println(re.FindAllStringSubmatch("none", -1))
+}
+
+func main4() {
     str := "INSERT INTO table1 (c1, c2, c3, c4, c5) VALUES ($1, $2, $3, $2, $3)"
     args := []interface{}{1980, "Bob", "Male"}
 
@@ -47,10 +55,10 @@ func main3() {
 
 }
 
-func main() {
+func main5() {
     str := "INSERT INTO table1 (f1) VALUES('Bob\\'s Book')"
 
 
     re := regexp.MustCompile(`'[^']+'`)
-    fmt.Println(re.FindAllString(str, -1))
+    fmt.Printf("%#v\n", re.FindAllString(str, -1))
 }
