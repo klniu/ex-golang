@@ -2,7 +2,8 @@ CREATE TABLE `chinese_word` (
   `word_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(8) NOT NULL,
   `url` varchar(512) NOT NULL,
-  PRIMARY KEY (`word_id`)
+  PRIMARY KEY (`word_id`),
+  KEY `title` (`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `chinese_word_pinyin` (
@@ -11,7 +12,8 @@ CREATE TABLE `chinese_word_pinyin` (
   `title` varchar(16) NOT NULL,
   `text` varchar(16) NOT NULL,
   `is_primary` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`word_pinyin_id`)
+  PRIMARY KEY (`word_pinyin_id`),
+  KEY `word_id` (`word_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 UPDATE chinese_word_pinyin SET `text` = REPLACE(`text`, 'ā', 'a');
@@ -54,5 +56,5 @@ CREATE TABLE `pinyin` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO `pinyin`(`title`, `pinyin`)
-SELECT a.title, (SELECT `text` from abc_chinese_word_pinyin where word_id = a.word_id and is_primary = 1) 
-from abc_chinese_word a;
+SELECT a.title, (SELECT `text` FROM chinese_word_pinyin where word_id = a.word_id and is_primary = 1) 
+FROM chinese_word a WHERE a.title <> '';
