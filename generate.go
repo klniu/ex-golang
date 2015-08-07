@@ -33,8 +33,6 @@ type Data struct {
 	Columns []Column
 }
 
-var server *db.Server = db.NewServer("mysql-1", "mysql", "root@tcp(127.0.0.1:3306)/information_schema?charset=utf8")
-
 func allTables() []Table {
 	tables := []Table{}
 	q := server.Select("TABLE_NAME", "TABLE_COMMENT")
@@ -66,11 +64,26 @@ func allColumns(table Table) Data {
 	return data
 }
 
+func parseTpl(data Data, p string, t *template.Template) {
+	f, err := os.Create(p)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	err = t.Execute(f, data) // os.Stdout
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 // Create a FuncMap with which to register the function.
 var funcMap template.FuncMap = template.FuncMap{
 	"UnderscoreToCamelcase": console.UnderscoreToCamelcase,
 	"CamelcaseToUnderscore": console.CamelcaseToUnderscore,
 }
+
+var server *db.Server = db.NewServer("mysql-1", "mysql", "root@tcp(127.0.0.1:3306)/information_schema?charset=utf8")
 
 var basePath string = "d:/home/gocode/src/github.com/liudng/recom"
 
@@ -80,75 +93,37 @@ func main() {
 	db.Env = 3
 	tables := allTables()
 
-	t := template.Must(template.New("controller").Funcs(funcMap).Parse(tplController))
+	tController := template.Must(template.New("controller").Funcs(funcMap).Parse(tplController))
+	tModel := template.Must(template.New("model").Funcs(funcMap).Parse(tplModel))
+	tBrowse := template.Must(template.New("browse").Funcs(funcMap).Parse(tplBrowse))
+	tDetail := template.Must(template.New("detail").Funcs(funcMap).Parse(tplDetail))
+	tAdd := template.Must(template.New("add").Funcs(funcMap).Parse(tplAdd))
+	tEdit := template.Must(template.New("edit").Funcs(funcMap).Parse(tplEdit))
+
 	for _, table := range tables {
 		data := allColumns(table)
 
-		f, err := os.Create(basePath + "/backend/" + data.Const["module"] + "/controller/" + data.Const["entity"] + ".go")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
+		p := basePath + "/backend/" + data.Const["module"] + "/controller/" + data.Const["entity"] + ".go"
+		parseTpl(data, p, tController)
 
-		// os.Stdout
-		err = t.Execute(f, data)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+		p = basePath + "/backend/" + data.Const["module"] + "/" + data.Const["entity"] + ".go"
+		parseTpl(data, p, tModel)
 
-	t = template.Must(template.New("model").Funcs(funcMap).Parse(tplModel))
-	for _, table := range tables {
-		data := allColumns(table)
+		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_browse.jsx"
+		parseTpl(data, p, tBrowse)
 
-		f, err := os.Create(basePath + "/backend/" + data.Const["module"] + "/" + data.Const["entity"] + ".go")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
+		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_detail.jsx"
+		parseTpl(data, p, tDetail)
 
-		// os.Stdout
-		err = t.Execute(f, data)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_add.jsx"
+		parseTpl(data, p, tAdd)
 
-	t = template.Must(template.New("browse").Funcs(funcMap).Parse(tplBrowse))
-	for _, table := range tables {
-		err := t.Execute(os.Stdout, allColumns(table))
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	t = template.Must(template.New("detail").Funcs(funcMap).Parse(tplDetail))
-	for _, table := range tables {
-		err := t.Execute(os.Stdout, allColumns(table))
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	t = template.Must(template.New("add").Funcs(funcMap).Parse(tplAdd))
-	for _, table := range tables {
-		err := t.Execute(os.Stdout, allColumns(table))
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	t = template.Must(template.New("edit").Funcs(funcMap).Parse(tplEdit))
-	for _, table := range tables {
-		err := t.Execute(os.Stdout, allColumns(table))
-		if err != nil {
-			log.Fatal(err)
-		}
+		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_edit.jsx"
+		parseTpl(data, p, tEdit)
 	}
 }
 
-const tplController = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplController = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -167,8 +142,7 @@ func init() {
 }
 `
 
-const tplModel = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplModel = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -202,10 +176,11 @@ func New{{ .Const.Entity }}Model() *{{ .Const.Entity }}Model {
 // Model methods
 `
 
-const tplBrowse = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplBrowse = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+
+"use strict";
 
 var React = require("react");
 var frontify = require("../shared/frontify.js");
@@ -226,10 +201,11 @@ var {{ .Const.Entity }}Browse = React.createClass({
 React.render(<{{ .Const.Entity }}Browse />, document.body);
 `
 
-const tplDetail = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplDetail = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+
+"use strict";
 
 var React = require("react");
 var frontify = require("../shared/frontify.js");
@@ -250,10 +226,11 @@ var {{ .Const.Entity }}Detail = React.createClass({
 React.render(<{{ .Const.Entity }}Detail />, document.body);
 `
 
-const tplAdd = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplAdd = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+
+"use strict";
 
 var React = require("react");
 var frontify = require("../shared/frontify.js");
@@ -281,10 +258,11 @@ var {{ .Const.Entity }}Add = React.createClass({
 React.render(<{{ .Const.Entity }}Add />, document.body);
 `
 
-const tplEdit = `
-// Copyright 2015 The recom Authors. All rights reserved.
+const tplEdit = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+
+"use strict";
 
 var React = require("react");
 var frontify = require("../shared/frontify.js");
