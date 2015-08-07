@@ -124,7 +124,7 @@ func main() {
 }
 
 const tplController = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 package {{ .Const.module }}_controller
@@ -143,7 +143,7 @@ func init() {
 `
 
 const tplModel = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 package {{ .Const.module }}
@@ -177,7 +177,7 @@ func New{{ .Const.Entity }}Model() *{{ .Const.Entity }}Model {
 `
 
 const tplBrowse = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 "use strict";
@@ -202,7 +202,7 @@ React.render(<{{ .Const.Entity }}Browse />, document.body);
 `
 
 const tplDetail = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 "use strict";
@@ -227,7 +227,7 @@ React.render(<{{ .Const.Entity }}Detail />, document.body);
 `
 
 const tplAdd = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 "use strict";
@@ -259,7 +259,7 @@ React.render(<{{ .Const.Entity }}Add />, document.body);
 `
 
 const tplEdit = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 "use strict";
