@@ -77,10 +77,31 @@ func parseTpl(data Data, p string, t *template.Template) {
 	}
 }
 
+func getType(str string) string {
+	v, ok := typeMap[str]
+	if !ok {
+		log.Fatalf("typeMap[%s] not exists.", str)
+	}
+	return v
+}
+
 // Create a FuncMap with which to register the function.
 var funcMap template.FuncMap = template.FuncMap{
 	"UnderscoreToCamelcase": console.UnderscoreToCamelcase,
 	"CamelcaseToUnderscore": console.CamelcaseToUnderscore,
+	"getType":               getType,
+}
+
+var typeMap map[string]string = map[string]string{
+	"bigint":    "int64",
+	"char":      "string",
+	"date":      "string",
+	"decimal":   "float64",
+	"int":       "int64",
+	"smallint":  "int64",
+	"tinyint":   "int64",
+	"timestamp": "string",
+	"varchar":   "string",
 }
 
 var server *db.Server = db.NewServer("mysql-1", "mysql", "root@tcp(127.0.0.1:3306)/information_schema?charset=utf8")
@@ -90,7 +111,7 @@ var basePath string = "d:/home/gocode/src/github.com/liudng/recom"
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	db.Env = 3
+	db.Env = 0
 	tables := allTables()
 
 	tController := template.Must(template.New("controller").Funcs(funcMap).Parse(tplController))
@@ -154,7 +175,7 @@ import (
 
 // Entity struct
 type {{ .Const.Entity }}Entity struct { {{ range $key, $column := .Columns }}
-	{{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
+	{{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
 }
 
 // Model struct
