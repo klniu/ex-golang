@@ -6,6 +6,7 @@ import (
 	"github.com/zhgo/db"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -58,6 +59,8 @@ func allColumns(table Table) Data {
 		"entity":    modules[1],
 		"Entity":    console.UnderscoreToCamelcase(modules[1]),
 		"Backquote": "`",
+		"BracketL":  "{",
+		"BracketR":  "}",
 	}
 	data := Data{con, table, columns}
 
@@ -65,6 +68,7 @@ func allColumns(table Table) Data {
 }
 
 func parseTpl(data Data, p string, t *template.Template) {
+	os.MkdirAll(filepath.Dir(p), os.ModeDir)
 	f, err := os.Create(p)
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +101,7 @@ var typeMap map[string]string = map[string]string{
 	"char":      "string",
 	"date":      "string",
 	"decimal":   "float64",
+	"enum":      "string",
 	"int":       "int64",
 	"smallint":  "int64",
 	"tinyint":   "int64",
@@ -106,12 +111,10 @@ var typeMap map[string]string = map[string]string{
 
 var server *db.Server = db.NewServer("mysql-1", "mysql", "root@tcp(127.0.0.1:3306)/information_schema?charset=utf8")
 
-var basePath string = "d:/home/gocode/src/github.com/liudng/recom"
-
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	db.Env = 0
+	db.Env = 3
 	tables := allTables()
 
 	tController := template.Must(template.New("controller").Funcs(funcMap).Parse(tplController))
@@ -124,22 +127,22 @@ func main() {
 	for _, table := range tables {
 		data := allColumns(table)
 
-		p := basePath + "/backend/" + data.Const["module"] + "/controller/" + data.Const["entity"] + ".go"
+		p := console.WorkingDir + "/backend/" + data.Const["module"] + "/controller/" + data.Const["entity"] + ".go"
 		parseTpl(data, p, tController)
 
-		p = basePath + "/backend/" + data.Const["module"] + "/" + data.Const["entity"] + ".go"
+		p = console.WorkingDir + "/backend/" + data.Const["module"] + "/" + data.Const["entity"] + ".go"
 		parseTpl(data, p, tModel)
 
-		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_browse.jsx"
+		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_browse.jsx"
 		parseTpl(data, p, tBrowse)
 
-		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_detail.jsx"
+		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_detail.jsx"
 		parseTpl(data, p, tDetail)
 
-		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_add.jsx"
+		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_add.jsx"
 		parseTpl(data, p, tAdd)
 
-		p = basePath + "/frontend/src/" + data.Const["module"] + "/" + data.Const["entity"] + "_edit.jsx"
+		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_edit.jsx"
 		parseTpl(data, p, tEdit)
 	}
 }
@@ -204,8 +207,27 @@ const tplBrowse = `// Copyright 2015 The recom Authors. All rights reserved.
 "use strict";
 
 var React = require("react");
-var frontify = require("../shared/frontify.js");
-var Container = require("../shared/container.jsx");
+var frontify = require("../frontify.js");
+var Container = require("../container.jsx");
+
+var {{ .Const.Entity }}List = React.createClass({
+  componentDidMount: function(){
+    
+  },
+  
+  render: function(){
+  	var nodes = this.props.data.map(function(item){
+	  return (<tr>
+	    <td>#</td>{{ range $key, $column := .Columns }}
+	    <td>{{ $.Const.BracketL }}item.{{ $column.ColumnName.String }}{{ $.Const.BracketR }}</td>{{ end }}
+	  </tr>);
+	});
+
+	return (<tbody>
+	  {nodes}
+	</tbody>);
+  }
+});
 
 var {{ .Const.Entity }}Browse = React.createClass({
   componentDidMount: function(){
@@ -214,7 +236,18 @@ var {{ .Const.Entity }}Browse = React.createClass({
   
   render: function(){
     return (<Container>
-    
+	  <h2 class="sub-header">{{ .Const.Entity }}</h2>
+	  <div class="table-responsive">
+	    <table class="table table-striped">
+	      <thead>
+	        <tr>
+	          <th>#</th>{{ range $key, $column := .Columns }}
+	          <th>{{ $column.ColumnComment.String }}</th>{{ end }}
+	        </tr>
+	      </thead>
+	      <{{ .Const.Entity }}List url="/{{ .Const.module }}/{{ .Const.entity }}/browse" />
+	    </table>
+	  </div>
     </Container>);
   }
 });
@@ -229,8 +262,8 @@ const tplDetail = `// Copyright 2015 The recom Authors. All rights reserved.
 "use strict";
 
 var React = require("react");
-var frontify = require("../shared/frontify.js");
-var Container = require("../shared/container.jsx");
+var frontify = require("../frontify.js");
+var Container = require("../container.jsx");
 
 var {{ .Const.Entity }}Detail = React.createClass({
   componentDidMount: function(){
@@ -254,8 +287,8 @@ const tplAdd = `// Copyright 2015 The recom Authors. All rights reserved.
 "use strict";
 
 var React = require("react");
-var frontify = require("../shared/frontify.js");
-var Container = require("../shared/container.jsx");
+var frontify = require("../frontify.js");
+var Container = require("../container.jsx");
 
 var {{ .Const.Entity }}Add = React.createClass({
   componentDidMount: function(){
@@ -286,8 +319,8 @@ const tplEdit = `// Copyright 2015 The recom Authors. All rights reserved.
 "use strict";
 
 var React = require("react");
-var frontify = require("../shared/frontify.js");
-var Container = require("../shared/container.jsx");
+var frontify = require("../frontify.js");
+var Container = require("../container.jsx");
 
 var {{ .Const.Entity }}Edit = React.createClass({
   componentDidMount: function(){
