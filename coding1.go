@@ -58,8 +58,6 @@ func allColumns(table Table) Data {
 		"Module":    console.UnderscoreToCamelcase(modules[0]),
 		"entity":    modules[1],
 		"Entity":    console.UnderscoreToCamelcase(modules[1]),
-		"table":     table.TableName.String,
-		"Table":     console.UnderscoreToCamelcase(table.TableName.String),
 		"Backquote": "`",
 		"BracketL":  "{",
 		"BracketR":  "}",
@@ -107,7 +105,7 @@ var typeMap map[string]string = map[string]string{
 	"int":       "int64",
 	"smallint":  "int64",
 	"tinyint":   "int64",
-	"timestamp": "time.Time",
+	"timestamp": "string",
 	"varchar":   "string",
 }
 
@@ -119,13 +117,8 @@ func main() {
 	db.Env = 3
 	tables := allTables()
 
-	tBiz := template.Must(template.New("biz").Funcs(funcMap).Parse(tplBiz))
-	tCtr := template.Must(template.New("ctr").Funcs(funcMap).Parse(tplCtr))
-	tEnt := template.Must(template.New("ent").Funcs(funcMap).Parse(tplEnt))
-	tIns := template.Must(template.New("ins").Funcs(funcMap).Parse(tplIns))
-	tMod := template.Must(template.New("mod").Funcs(funcMap).Parse(tplMod))
-	tTab := template.Must(template.New("tab").Funcs(funcMap).Parse(tplTab))
-
+	tController := template.Must(template.New("controller").Funcs(funcMap).Parse(tplController))
+	tModel := template.Must(template.New("model").Funcs(funcMap).Parse(tplModel))
 	tBrowse := template.Must(template.New("browse").Funcs(funcMap).Parse(tplBrowse))
 	tDetail := template.Must(template.New("detail").Funcs(funcMap).Parse(tplDetail))
 	tAdd := template.Must(template.New("add").Funcs(funcMap).Parse(tplAdd))
@@ -134,157 +127,81 @@ func main() {
 	for _, table := range tables {
 		data := allColumns(table)
 
-		// biz
-		p := console.WorkingDir + "/backend/biz/" + table.TableName.String + ".go"
-		parseTpl(data, p, tBiz)
+		p := console.WorkingDir + "/backend/" + data.Const["module"] + "/controller/" + data.Const["entity"] + ".go"
+		parseTpl(data, p, tController)
 
-		// ctr
-		p = console.WorkingDir + "/backend/ctr/" + table.TableName.String + ".go"
-		parseTpl(data, p, tCtr)
+		p = console.WorkingDir + "/backend/" + data.Const["module"] + "/" + data.Const["entity"] + ".go"
+		parseTpl(data, p, tModel)
 
-		// ent
-		p = console.WorkingDir + "/backend/ent/" + table.TableName.String + ".go"
-		parseTpl(data, p, tEnt)
-
-		// ins
-		p = console.WorkingDir + "/backend/ins/" + table.TableName.String + ".go"
-		parseTpl(data, p, tIns)
-
-		// mod
-		p = console.WorkingDir + "/backend/mod/" + table.TableName.String + ".go"
-		parseTpl(data, p, tMod)
-
-		// tab
-		p = console.WorkingDir + "/backend/tab/" + table.TableName.String + ".go"
-		parseTpl(data, p, tTab)
-
-		// browse
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_browse.jsx"
 		parseTpl(data, p, tBrowse)
 
-		// detail
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_detail.jsx"
 		parseTpl(data, p, tDetail)
 
-		// add
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_add.jsx"
 		parseTpl(data, p, tAdd)
 
-		// edit
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_edit.jsx"
 		parseTpl(data, p, tEdit)
 	}
 }
 
-const tplBiz = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplController = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
-package biz
-
-import ()
-
-// Biz struct
-type {{ .Const.Table }} struct {
-	
-}
-
-// New Biz
-func New{{ .Const.Table }}() *{{ .Const.Table }} {
-	return &{{ .Const.Table }}{}
-}
-
-// Biz methods
-`
-
-const tplCtr = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package ctr
+package {{ .Const.module }}_controller
 
 import (
 	"github.com/zhgo/web"
 )
 
-type {{ .Const.Table }} struct {
+type {{ .Const.Entity }}Controller struct {
 	// import web.Controller
 	web.Controller
+
+	// import web.Crud
+	web.Crud
 }
 
 func init() {
-	web.NewController("{{ .Const.Module }}", new({{ .Const.Table }}))
+	web.NewController("{{ .Const.Module }}", new({{ .Const.Entity }}Controller))
 }
 `
 
-const tplEnt = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplModel = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
-package ent
+package {{ .Const.module }}
 
 import (
-	"time"
+	"github.com/zhgo/db"
 )
 
 // Entity struct
-type {{ .Const.Table }} struct { {{ range $key, $column := .Columns }}
+type {{ .Const.Entity }}Entity struct { {{ range $key, $column := .Columns }}
 	{{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
 }
-`
-
-const tplIns = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package ins
-
-import (
-	"github.com/liudng/recom/backend/mod"
-)
-
-// Model instance
-var {{ .Const.Table }} = mod.New{{ .Const.Table }}()
-`
-
-const tplMod = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package mod
-
-import (
-	"github.com/liudng/recom/backend/tab"
-	"github.com/zhgo/db"
-)
 
 // Model struct
-type {{ .Const.Table }} struct {
-	// Import db.Model
-	db.Model
+type {{ .Const.Entity }}Model struct {
+	db.Model //Import db.Model
 }
 
+// Table
+var {{ .Const.Entity }}Table = db.NewTable("{{ .Table.TableName.String }}", new({{ .Const.Entity }}Entity))
+
+// Model
+var {{ .Const.Entity }} = New{{ .Const.Entity }}Model()
+
 // New Model
-func New{{ .Const.Table }}() *{{ .Const.Table }} {
-	return &{{ .Const.Table }}{Model: db.NewModel("{{ .Const.Module }}", tab.{{ .Const.Table }})}
+func New{{ .Const.Entity }}Model() *{{ .Const.Entity }}Model {
+	return &{{ .Const.Entity }}Model{Model: db.NewModel("{{ .Const.Module }}", {{ .Const.Entity }}Table)}
 }
 
 // Model methods
-`
-
-const tplTab = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package tab
-
-import (
-	"github.com/liudng/recom/backend/ent"
-	"github.com/zhgo/db"
-)
-
-// Table
-var {{ .Const.Table }} = db.NewTable("{{ .Table.TableName.String }}", new(ent.{{ .Const.Table }}))
 `
 
 const tplBrowse = `// Copyright 2015 The recom Authors. All rights reserved.
@@ -298,16 +215,10 @@ var frontify = require("../frontify.js");
 var Container = require("../container.jsx");
 
 var {{ .Const.Entity }}List = React.createClass({
-  getInitialState: function() {
-    return {data: []};
-  },
   componentDidMount: function(){
-    frontify.api(this, this.props.url, {}, function(data){
-	  this.setState({data: data.data});
-    }, function(){
-      console.log(this.props.url, status, err.toString());
-    });
+    
   },
+  
   render: function(){
   	var nodes = this.props.data.map(function(item){
 	  return (<tr>
@@ -316,7 +227,9 @@ var {{ .Const.Entity }}List = React.createClass({
 	  </tr>);
 	});
 
-	return (<tbody>{nodes}</tbody>);
+	return (<tbody>
+	  {nodes}
+	</tbody>);
   }
 });
 
@@ -324,6 +237,7 @@ var {{ .Const.Entity }}Browse = React.createClass({
   componentDidMount: function(){
     
   },
+  
   render: function(){
     return (<Container>
 	  <h2 class="sub-header">{{ .Const.Entity }}</h2>
@@ -335,7 +249,7 @@ var {{ .Const.Entity }}Browse = React.createClass({
 	          <th>{{ $column.ColumnComment.String }}</th>{{ end }}
 	        </tr>
 	      </thead>
-	      <{{ .Const.Entity }}List url="/{{ .Const.module }}/{{ .Const.entity }}/list" />
+	      <{{ .Const.Entity }}List url="/{{ .Const.module }}/{{ .Const.entity }}/browse" />
 	    </table>
 	  </div>
     </Container>);
@@ -359,6 +273,7 @@ var {{ .Const.Entity }}Detail = React.createClass({
   componentDidMount: function(){
     
   },
+  
   render: function(){
     return (<Container>
     
@@ -387,6 +302,7 @@ var {{ .Const.Entity }}Add = React.createClass({
       console.log(err);
     });
   },
+  
   render: function(){
     return (<Container>
     <form id="form1" action="/{{ .Const.module }}/{{ .Const.entity }}/add" method="post" className="">
@@ -418,6 +334,7 @@ var {{ .Const.Entity }}Edit = React.createClass({
       console.log(err);
     });
   },
+  
   render: function(){
     return (<Container>
     <form id="form1" action="/{{ .Const.module }}/{{ .Const.entity }}/edit" method="post" className="">
