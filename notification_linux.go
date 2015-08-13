@@ -29,6 +29,7 @@ package main // import "golang.org/x/exp/inotify"
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"sync"
@@ -298,3 +299,109 @@ var eventBits = []struct {
 	{IN_Q_OVERFLOW, "IN_Q_OVERFLOW"},
 	{IN_UNMOUNT, "IN_UNMOUNT"},
 }
+
+func main() {
+	watcher, err := NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dirs := []string{
+		"/home/gocode/src/github.com/zhgo/console",
+		"/home/gocode/src/github.com/zhgo/db",
+		"/home/gocode/src/github.com/zhgo/web",
+	}
+
+	for _, dir := range dirs {
+		err = watcher.Watch(dir)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	for {
+		select {
+		case ev := <-watcher.Event:
+			masks := []string{}
+			m := ev.Mask
+			for _, b := range eventBits {
+				if m&b.Value == b.Value {
+					m &^= b.Value
+					masks = append(masks, b.Name)
+				}
+			}
+			log.Printf("%s %#v %#v\n\n", ev.Name, ev.Mask, masks)
+		case err := <-watcher.Error:
+			log.Println("error:", err)
+		}
+	}
+}
+
+/*func main() {
+	dirs := []string{
+		"/home/gocode/src/github.com/zhgo/console",
+		"/home/gocode/src/github.com/zhgo/db",
+		"/home/gocode/src/github.com/zhgo/web",
+		"/home/gocode/src/recom/backend",
+	}
+
+	l := len(dirs)
+	sem := make(chan int, l)
+
+	for _, dir := range dirs {
+		go monitor(dir, sem)
+	}
+
+	for i := 0; i < l; i++ {
+		<-sem
+	}
+}
+
+func monitor(dir string, sem chan int) {
+	watcher, err := NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = watcher.Watch(dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		select {
+		case ev := <-watcher.Event:
+			fmt.Println("event:", ev)
+		case err := <-watcher.Error:
+			fmt.Println("error:", err)
+		}
+	}
+
+	sem <- 0
+}*/
+
+/*var buf [4096]byte
+var ov syscall.Overlapped
+var mask uint32
+mask = syscall.FILE_NOTIFY_CHANGE_FILE_NAME | syscall.FILE_NOTIFY_CHANGE_DIR_NAME | syscall.FILE_NOTIFY_CHANGE_LAST_WRITE
+e := syscall.ReadDirectoryChanges(dwChangeHandles[dwWaitStatus], &buf[0], uint32(unsafe.Sizeof(buf)), true, mask, nil, &ov, 0)
+if e != nil {
+	err := os.NewSyscallError("ReadDirectoryChanges", e)
+	fmt.Printf("[dogo] Error: %s\n", err.Error())
+} else {
+	var offset uint32
+	for {
+		raw := (*syscall.FileNotifyInformation)(unsafe.Pointer(&buf[offset]))
+		buf := (*[syscall.MAX_PATH]uint16)(unsafe.Pointer(&raw.FileName))
+		name := syscall.UTF16ToString(buf[:raw.FileNameLength/2])
+
+		fmt.Printf("%#v\n", raw)
+		fmt.Printf("%#v\n", name)
+
+		// Move to the next event in the buffer
+		if raw.NextEntryOffset == 0 {
+			break
+		}
+		offset += raw.NextEntryOffset
+	}
+}*/
