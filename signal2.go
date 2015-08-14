@@ -1,19 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
-	// Set up channel on which to send signal notifications.
-	// We must use a buffered channel or risk missing the signal
-	// if we're not ready to receive when the signal is sent.
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
-
-	// Block until a signal is received.
-	s := <-c
-	fmt.Println("Got signal:", s)
+	c := make(chan os.Signal, 10)
+	signal.Notify(c)
+	select {
+	case s := <-c:
+		if s != os.Interrupt {
+			log.Fatalf("Wrong signal received: got %q, want %q\n", s, os.Interrupt)
+		}
+	case <-time.After(3 * time.Second):
+		log.Fatalf("Timeout waiting for Ctrl+Break\n")
+	}
 }
