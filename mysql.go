@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/zhgo/console"
+	"github.com/zhgo/db"
 	"log"
 	"strings"
 	"text/template"
@@ -30,6 +31,8 @@ type Data struct {
 	Table   Table
 	Columns []Column
 }
+
+var server *db.Server = db.NewServer("mysql-1", "mysql", "root@tcp(127.0.0.1:3306)/information_schema?charset=utf8")
 
 var typeMap map[string]string = map[string]string{
 	"bigint":    "int64",
