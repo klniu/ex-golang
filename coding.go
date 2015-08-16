@@ -27,43 +27,45 @@ func main() {
 		data := allColumns(table)
 
 		// biz
-		p := console.WorkingDir + "/backend/biz/" + table.TableName.String + ".go"
-		parseTpl(data, p, tBiz)
+		p := console.WorkingDir + "/backend/biz/" + data.Const["table"] + ".go"
+		parseDft(data, p, tBiz)
 
 		// ctr
-		p = console.WorkingDir + "/backend/ctr/" + table.TableName.String + ".go"
-		parseTpl(data, p, tCtr)
+		p = console.WorkingDir + "/backend/ctr/" + data.Const["table"] + ".go"
+		parseDft(data, p, tCtr)
 
 		// ent
-		p = console.WorkingDir + "/backend/ent/" + table.TableName.String + ".go"
-		parseTpl(data, p, tEnt)
+		p = console.WorkingDir + "/backend/ent/" + data.Const["module"] + ".go"
+		parseMdl("ent", data, p, tEnt, tplEntHeader)
 
 		// iom
-		p = console.WorkingDir + "/backend/iom/" + table.TableName.String + ".go"
-		parseTpl(data, p, tIom)
+		p = console.WorkingDir + "/backend/iom/" + data.Const["module"] + ".go"
+		parseMdl("iom", data, p, tIom, tplIomHeader)
 
 		// mod
-		p = console.WorkingDir + "/backend/mod/" + table.TableName.String + ".go"
-		parseTpl(data, p, tMod)
+		p = console.WorkingDir + "/backend/mod/" + data.Const["table"] + ".go"
+		parseDft(data, p, tMod)
 
 		// tab
-		p = console.WorkingDir + "/backend/tab/" + table.TableName.String + ".go"
-		parseTpl(data, p, tTab)
+		p = console.WorkingDir + "/backend/tab/" + data.Const["module"] + ".go"
+		parseMdl("tab", data, p, tTab, tplTabHeader)
 
 		// add
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_add.jsx"
-		parseTpl(data, p, tAdd)
+		parseDft(data, p, tAdd)
 
 		// browse
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_browse.jsx"
-		parseTpl(data, p, tBrowse)
+		parseDft(data, p, tBrowse)
 
 		// detail
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_detail.jsx"
-		parseTpl(data, p, tDetail)
+		parseDft(data, p, tDetail)
 
 		// edit
 		p = console.WorkingDir + "/frontend/" + data.Const["module"] + "/" + data.Const["entity"] + "_edit.jsx"
-		parseTpl(data, p, tEdit)
+		parseDft(data, p, tEdit)
 	}
+
+	closeFiles()
 }
