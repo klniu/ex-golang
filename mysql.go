@@ -63,6 +63,7 @@ func getType(str string) string {
 }
 
 func allTables() []Table {
+	db.Env = 3
 	tables := []Table{}
 	q := server.Select("TABLE_NAME", "TABLE_COMMENT")
 	err := q.From("TABLES").Where(q.Eq("TABLE_SCHEMA", "recom")).Rows(&tables)
