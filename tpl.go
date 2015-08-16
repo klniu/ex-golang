@@ -54,7 +54,7 @@ func (c *{{ .Const.Table }}) List() web.Result {
 }
 `
 
-const tplEnt = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplEntHeader = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
@@ -64,13 +64,15 @@ import (
     "time"
 )
 
-// Entity struct
-type {{ .Const.Table }} struct { {{ range $key, $column := .Columns }}
-    {{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
-}
 `
 
-const tplIom = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplEnt = `type {{ .Const.Table }} struct { {{ range $key, $column := .Columns }}
+    {{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
+}
+
+`
+
+const tplIomHeader = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
@@ -80,8 +82,10 @@ import (
     "recom/backend/mod"
 )
 
-// Model instance
-var {{ .Const.Table }} = mod.New{{ .Const.Table }}()
+`
+
+const tplIom = `var {{ .Const.Table }} = mod.New{{ .Const.Table }}()
+
 `
 
 const tplMod = `// Copyright 2015 The recom Authors. All rights reserved.
@@ -109,7 +113,7 @@ func New{{ .Const.Table }}() *{{ .Const.Table }} {
 // Model methods
 `
 
-const tplTab = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplTabHeader = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
@@ -120,8 +124,10 @@ import (
     "recom/backend/ent"
 )
 
-// Table
-var {{ .Const.Table }} = db.NewTable("{{ .Table.TableName.String }}", new(ent.{{ .Const.Table }}))
+`
+
+const tplTab = `var {{ .Const.Table }} = db.NewTable("{{ .Table.TableName.String }}", new(ent.{{ .Const.Table }}))
+
 `
 
 const tplAdd = `// Copyright 2015 The recom Authors. All rights reserved.
