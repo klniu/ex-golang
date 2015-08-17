@@ -8,6 +8,8 @@ import (
 	"text/template"
 )
 
+var files map[string]map[string]*os.File = make(map[string]map[string]*os.File)
+
 func parseDft(data Data, p string, t *template.Template) {
 	os.MkdirAll(filepath.Dir(p), os.ModeDir)
 	f, err := os.Create(p)
@@ -21,8 +23,6 @@ func parseDft(data Data, p string, t *template.Template) {
 		log.Fatal(err)
 	}
 }
-
-var files map[string]map[string]*os.File = make(map[string]map[string]*os.File)
 
 func parseMdl(node string, data Data, p string, t *template.Template, initStr string) {
 	var err error
