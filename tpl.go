@@ -90,7 +90,7 @@ import (
 `
 
 const tplEnt = `type {{ .Const.Table }} struct { {{ range $key, $column := .Columns }}
-    {{ UsToCs $column.ColumnName.String true }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
+    {{ UsToCs $column.ColumnName.String true }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ UsToCs $column.ColumnName.String false }}" field:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
 }
 
 `
@@ -108,19 +108,19 @@ import (
 
 `
 
-const tplMod1 = `type {{ .Const.Table }} struct {
+const tplMod1 = `var {{ UsToCs .Const.table false }} = db.NewTable("{{ .Const.table }}", new(ent.{{ .Const.Table }}))
+
+`
+
+const tplMod2 = `type {{ .Const.Table }} struct {
     db.Model
 }
 
 `
 
-const tplMod2 = `func New{{ .Const.Table }}() *{{ .Const.Table }} {
+const tplMod3 = `func New{{ .Const.Table }}() *{{ .Const.Table }} {
     return &{{ .Const.Table }}{Model: db.NewModel("{{ .Const.Module }}", {{ UsToCs .Const.table false }})}
 }
-
-`
-
-const tplMod3 = `var {{ UsToCs .Const.table false }} = db.NewTable("{{ .Const.table }}", new(ent.{{ .Const.Table }}))
 
 `
 
