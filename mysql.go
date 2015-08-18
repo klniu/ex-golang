@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"github.com/zhgo/console"
 	"github.com/zhgo/db"
+	"github.com/zhgo/nameconv"
 	"log"
 	"strings"
 	"text/template"
@@ -49,9 +49,9 @@ var typeMap map[string]string = map[string]string{
 
 // Create a FuncMap with which to register the function.
 var funcMap template.FuncMap = template.FuncMap{
-	"UnderscoreToCamelcase": console.UnderscoreToCamelcase,
-	"CamelcaseToUnderscore": console.CamelcaseToUnderscore,
-	"getType":               getType,
+	"UsToCs":  nameconv.UnderscoreToCamelcase,
+	"CsToUs":  nameconv.CamelcaseToUnderscore,
+	"getType": getType,
 }
 
 func getType(str string) string {
@@ -84,11 +84,11 @@ func allColumns(table Table) Data {
 	modules := strings.SplitN(table.TableName.String, "_", 2)
 	con := map[string]string{
 		"module":    modules[0],
-		"Module":    console.UnderscoreToCamelcase(modules[0]),
+		"Module":    nameconv.UnderscoreToCamelcase(modules[0], true),
 		"entity":    modules[1],
-		"Entity":    console.UnderscoreToCamelcase(modules[1]),
+		"Entity":    nameconv.UnderscoreToCamelcase(modules[1], true),
 		"table":     table.TableName.String,
-		"Table":     console.UnderscoreToCamelcase(table.TableName.String),
+		"Table":     nameconv.UnderscoreToCamelcase(table.TableName.String, true),
 		"Backquote": "`",
 		"BracketL":  "{",
 		"BracketR":  "}",
