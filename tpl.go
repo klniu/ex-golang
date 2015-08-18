@@ -1,24 +1,19 @@
 package main
 
-const tplBiz = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplBizHeader = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 package biz
 
-import ()
+import (
+    "recom/backend/mod"
+)
 
-// Biz struct
-type {{ .Const.Table }} struct {
-    
-}
+`
 
-// New Biz
-func New{{ .Const.Table }}() *{{ .Const.Table }} {
-    return &{{ .Const.Table }}{}
-}
+const tplBiz = `var {{ .Const.Table }} = mod.New{{ .Const.Table }}()
 
-// Biz methods
 `
 
 const tplCtr = `// Copyright 2015 The recom Authors. All rights reserved.
@@ -28,29 +23,57 @@ const tplCtr = `// Copyright 2015 The recom Authors. All rights reserved.
 package ctr
 
 import (
+    "github.com/zhgo/db"
     "github.com/zhgo/web"
+    "recom/backend/biz"
+    "recom/backend/ent"
 )
 
-type {{ .Const.Table }} struct {
-    // import web.Controller
-    web.Controller
+func init() {
+    web.NewController(new({{ .Const.Table }}Edit))
+    web.NewController(new({{ .Const.Table }}Delete))
+    web.NewController(new({{ .Const.Table }}List))
 }
 
-func init() {
-    web.NewController("{{ .Const.Module }}", new({{ .Const.Table }}))
+// Edit
+type {{ .Const.Table }}Edit struct {
+    // Import {{ .Const.Module }}Controller
+    {{ .Const.Module }}Controller
+}
+
+func (c *{{ .Const.Table }}Edit) Render() web.Result {
+    return web.Done(1)
+}
+
+// Delete
+type {{ .Const.Table }}Delete struct {
+    // Import {{ .Const.Module }}Controller
+    {{ .Const.Module }}Controller
+}
+
+func (c *{{ .Const.Table }}Delete) Render() web.Result {
+    return web.Done(1)
 }
 
 // List
-func (c *{{ .Const.Table }}) List() web.Result {
+type {{ .Const.Table }}List struct {
+    // Import {{ .Const.Module }}Controller
+    {{ .Const.Module }}Controller
+    
+    // Browse data filter
+    Cond db.Condition {{ .Const.Backquote }}json:"cond"{{ .Const.Backquote }}
+}
+
+func (c *{{ .Const.Table }}List) Render() web.Result {
     d := []ent.{{ .Const.Table }}{}
 
-    q := iom.{{ .Const.Table }}.Select()
-    err := q.Parse(c.Request.Body.Cond).Rows(&d)
+    q := biz.{{ .Const.Table }}.Select()
+    err := q.Parse(c.Cond).Rows(&d)
     if err != nil {
-        return c.Fail(err)
+        return web.Fail(err)
     }
 
-    return c.Done(d)
+    return web.Done(d)
 }
 `
 
@@ -67,57 +90,16 @@ import (
 `
 
 const tplEnt = `type {{ .Const.Table }} struct { {{ range $key, $column := .Columns }}
-    {{ UnderscoreToCamelcase $column.ColumnName.String }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
+    {{ UsToCs $column.ColumnName.String true }}    {{ getType $column.DataType.String }}    {{ $.Const.Backquote }}json:"{{ $column.ColumnName.String }}"{{ if eq $column.ColumnKey.String "PRI" }} pk:"true"{{ end }}{{ $.Const.Backquote }}{{ end }}
 }
 
 `
 
-const tplIomHeader = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package iom
-
-import (
-    "recom/backend/mod"
-)
-
-`
-
-const tplIom = `var {{ .Const.Table }} = mod.New{{ .Const.Table }}()
-
-`
-
-const tplMod = `// Copyright 2015 The recom Authors. All rights reserved.
+const tplModHeader = `// Copyright 2015 The recom Authors. All rights reserved.
 // Use of this source code is governed by a GNU-style
 // license that can be found in the LICENSE file.
 
 package mod
-
-import (
-    "github.com/zhgo/db"
-    "recom/backend/tab"
-)
-
-// Model struct
-type {{ .Const.Table }} struct {
-    // Import db.Model
-    db.Model
-}
-
-// New Model
-func New{{ .Const.Table }}() *{{ .Const.Table }} {
-    return &{{ .Const.Table }}{Model: db.NewModel("{{ .Const.Module }}", tab.{{ .Const.Table }})}
-}
-
-// Model methods
-`
-
-const tplTabHeader = `// Copyright 2015 The recom Authors. All rights reserved.
-// Use of this source code is governed by a GNU-style
-// license that can be found in the LICENSE file.
-
-package tab
 
 import (
     "github.com/zhgo/db"
@@ -126,7 +108,19 @@ import (
 
 `
 
-const tplTab = `var {{ .Const.Table }} = db.NewTable("{{ .Table.TableName.String }}", new(ent.{{ .Const.Table }}))
+const tplMod1 = `type {{ .Const.Table }} struct {
+    db.Model
+}
+
+`
+
+const tplMod2 = `func New{{ .Const.Table }}() *{{ .Const.Table }} {
+    return &{{ .Const.Table }}{Model: db.NewModel("{{ .Const.Module }}", {{ UsToCs .Const.table false }})}
+}
+
+`
+
+const tplMod3 = `var {{ UsToCs .Const.table false }} = db.NewTable("{{ .Const.table }}", new(ent.{{ .Const.Table }}))
 
 `
 
