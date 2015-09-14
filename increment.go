@@ -10,7 +10,7 @@ func main() {
     c := 0
 
     for i := 0; i < len(a); i++ {
-        b[i] = a[c++]
+        b[i] = a[(c++)]
     }
 
     log.Printf("%#v\n", b)

@@ -3,21 +3,21 @@ CPU Intel i5 3210U 1.70GHz
 RAM 4GB
 OS  Windows 7 x64
 
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] go run hash.go
+[examples] go run hash.go
 共计200万条数据，数据总长度17998964, 其中1744716条不重复数据
 完成过滤共耗时6.0283448s
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] csc hash.cs
+[examples] csc hash.cs
 Microsoft (R) Visual C# 2005 编译器 版本 8.00.50727.4927
 用于 Microsoft (R) Windows (R) 2005 Framework 版本 2.0.50727
 版权所有(C) Microsoft Corporation 2001-2005。保留所有权利。
 
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] hash.exe
+[examples] hash.exe
 共计200万条数据，数据总长度17997041，其中1744053条不重复数据
 完成过滤共耗时0.951s
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] javac -encoding UTF-8 hash.java
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] java -Xms256m -Xmx512m -XX:MaxPermSize=256m hash
+[examples] javac -encoding UTF-8 hash.java
+[examples] java -Xms256m -Xmx512m -XX:MaxPermSize=256m hash
 共计200万条数据，数据总长度18001993，其中1745325条不重复数据
 完成过滤共耗时2.161s
-[e:\home\mplus\data\mon\trunk\server\src\github.com\liudng\examples] node hash.js
+[examples] node hash.js
 共计200万条数据，数据总长度17997239，其中1745234条不重复数据
 完成过滤共耗时9.639s

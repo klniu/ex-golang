@@ -14,7 +14,7 @@ namespace tree
             //有谁还可以写出更快的吗？可以拿这个输入条件做测试。
             //200万个字符串，需要280毫秒，不包括显示在内。
 
-            int totalStr = 200*10000;
+            int totalStr = 1000*10000;
             List<string> myArr = new List<string>();
             int totalLength = 0;
             char[] input = "白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人".ToCharArray();
@@ -31,20 +31,20 @@ namespace tree
 
             //测试开始
             long begin = System.DateTime.Now.Ticks;
-            Dictionary<string, string> Dict = new Dictionary<string, string>();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
 
             for (int i = 0; i < myArr.Count;i++ ) {
                 char[] charArr = myArr[i].ToCharArray();
                 Array.Sort(charArr);
                 string sKey = new string(charArr);
-                if (!Dict.ContainsKey(sKey)) {
-                    Dict.Add(sKey, myArr[i]);
+                if (!dict.ContainsKey(sKey)) {
+                    dict.Add(sKey, myArr[i]);
                 }
             }
 
             long end = System.DateTime.Now.Ticks;
 
-            Console.WriteLine("共计" + totalStr/10000 + "万条数据，数据总长度" + totalLength + "，其中" + Dict.Count + "条不重复数据");
+            Console.WriteLine("共计" + totalStr/10000 + "万条数据，数据总长度" + totalLength + "，其中" + dict.Count + "条不重复数据");
             Console.WriteLine("完成过滤共耗时" + System.TimeSpan.FromTicks(end - begin).Milliseconds /1000.000 + "s");
         }
     }
