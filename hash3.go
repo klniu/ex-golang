@@ -28,6 +28,7 @@ func (s sortRunes) Len() int {
     return len(s)
 }
 
+// Maps are not safe for concurrent use
 type Map struct {
     sync.RWMutex
     Data map[string]string
@@ -70,6 +71,7 @@ func main() {
     end := time.Now()
 
     fmt.Printf("共计%v万条数据，数据总长度%v, 其中%v条不重复数据\n", totalStr/10000, totalLength, len(dict.Data))
+
     //fmt.Printf("%v\n%v\n", begin, end)
     fmt.Printf("完成过滤共耗时%v\n", end.Sub(begin))
 }
@@ -78,7 +80,12 @@ func sort1(dict *Map, v string, sem chan int) {
     keySli := []rune(v)
     sort.Sort(sortRunes(keySli))
     key := string(keySli)
-    if _, s := dict.Data[key]; s == false {
+
+    dict.RLock()
+    _, s := dict.Data[key]
+    dict.Unlock()
+
+    if s == false {
         dict.Lock()
         dict.Data[key] = v
         dict.Unlock()

@@ -20,17 +20,17 @@ for($i = 0; $i < $totalStr; $i++) {
 //Begin
 $begin = microtime(true);
 
-$Dict = array();
+$dict = array();
 foreach($myArr as $v) {
 	$keyArr = str_split($v);
     sort($keyArr);
 	$key = implode('', $keyArr);
-    if(!isset($Dict[$key])) {
-        $Dict[$key] = $v;
+    if(!isset($dict[$key])) {
+        $dict[$key] = $v;
     }
 }
 
 $end = microtime(true);
 
-printf("共计%s万条数据, 数据总长度%s，其中%d条不重复数据\n", $totalStr/10000, $totalLength, count($Dict));
+printf("共计%s万条数据, 数据总长度%s，其中%d条不重复数据\n", $totalStr/10000, $totalLength, count($dict));
 printf("完成过滤共耗时%s秒\n", $end - $begin);
