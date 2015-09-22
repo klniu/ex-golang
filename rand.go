@@ -1,18 +1,38 @@
-// go run hash.go
+// go run rand.go
 // Author: liudng@gmail.com
-// 2014-9-23
+// 2015-9-22
 
 package main
 
 import (
     "fmt"
+    "log"
     "math/rand"
-    "sort"
+    "os"
+    "runtime/pprof"
     "strings"
     "time"
 )
 
 func main() {
+    fc, err := os.Create("rand.prof")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer fc.Close()
+    pprof.StartCPUProfile(fc)
+    defer pprof.StopCPUProfile()
+
+    fm, err := os.Create("rand.mprof")
+    if err != nil {
+        log.Fatal(err)
+    }
+    pprof.WriteHeapProfile(fm)
+    fm.Close()
+
+    //Begin
+    begin := time.Now()
+
     totalStr := 600 * 10000
     myArr := make([]string, totalStr)
     totalLength := 0
@@ -30,22 +50,8 @@ func main() {
         myArr[i] = tempStr
     }
 
-    //Begin
-    begin := time.Now()
-
-    dict := make(map[string]string)
-    for _, v := range myArr {
-        keySli := strings.Split(v, "")
-        sort.Strings(keySli)
-        key := strings.Join(keySli, "")
-        if _, s := dict[key]; s == false {
-            dict[key] = v
-        }
-    }
-
     end := time.Now()
 
-    fmt.Printf("共计%v万条数据，数据总长度%v, 其中%v条不重复数据\n", totalStr/10000, totalLength, len(dict))
-    //fmt.Printf("%v\n%v\n", begin, end)
+    fmt.Printf("共计%v万条数据，数据总长度%v\n", totalStr/10000, totalLength)
     fmt.Printf("完成过滤共耗时%v\n", end.Sub(begin))
 }

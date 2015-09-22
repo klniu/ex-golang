@@ -14,7 +14,7 @@ namespace tree
             //有谁还可以写出更快的吗？可以拿这个输入条件做测试。
             //200万个字符串，需要280毫秒，不包括显示在内。
 
-            int totalStr = 1000*10000;
+            int totalStr = 200*10000;
             List<string> myArr = new List<string>();
             int totalLength = 0;
             char[] input = "白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人".ToCharArray();

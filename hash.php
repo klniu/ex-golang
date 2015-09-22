@@ -3,7 +3,7 @@
 // Author: liudng@gmail.com
 // 2014-9-24
 
-$totalStr = 1000*10000;
+$totalStr = 200*10000;
 $myArr = array();
 $totalLength = 0;
 $input = str_split("白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人");

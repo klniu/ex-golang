@@ -2,7 +2,7 @@
 // Author: liudng@gmail.com
 // 2014-9-25
 
-var totalStr = 1000*10000
+var totalStr = 200*10000
 var myArr = []
 var totalLength = 0
 var input = "白日依山尽黄河入海流欲穷千里目更上一层楼危楼高百尺可以摘星辰不感高声语恐惊天上人".split("")

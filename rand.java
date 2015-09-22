@@ -1,13 +1,15 @@
-// javac -encoding UTF-8 hash.java
-// java -Xms256m -Xmx512m hash
-// java -Xms256m -Xmx512m -XX:MaxPermSize=256m hash
+// javac -encoding UTF-8 rand.java
+// java -Xms256m -Xmx1300m rand
 // Author: liudng@gmail.com
-// 2014-9-24
+// 2015-9-22
 
 import java.util.*;
 
-public class hash {
+public class rand {
     public static void main(String[] args) {
+        //Begin
+        long begin = java.util.Calendar.getInstance().getTimeInMillis();
+        
         int totalStr = 600*10000;
         List<String> myArr = new ArrayList<String>();
         int totalLength = 0;
@@ -23,22 +25,9 @@ public class hash {
             myArr.add(tempStr);
         }
 
-        //Begin
-        long begin = java.util.Calendar.getInstance().getTimeInMillis();
-        
-        Dictionary<String, String> dict = new Hashtable<String, String>();
-        for (int i = 0; i < myArr.size();i++ ) {
-            char[] charArr = myArr.get(i).toCharArray();
-            Arrays.sort(charArr);
-            String sKey = new String(charArr);
-            if (dict.get(sKey) == null) {
-                dict.put(sKey, myArr.get(i));
-            }
-        }
-
         long end = java.util.Calendar.getInstance().getTimeInMillis();
 
-        System.out.println("共计" + totalStr / 10000 + "万条数据，数据总长度" + totalLength + "，其中" + dict.size() + "条不重复数据");
+        System.out.println("共计" + totalStr / 10000 + "万条数据，数据总长度" + totalLength);
         System.out.println("完成过滤共耗时" + (end - begin) /1000.000 + "s");
     }
 }
